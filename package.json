@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "watchify -t [ riotify --compact ] -t [ babelify ] -e src/app.js -v -d -o 'exorcist dist/index.js.map > dist/index.js'"
+  },
+  "dependencies": {
+    "todomvc-app-css": "^2.0.0",
+    "todomvc-common": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015-riot": "^1.0.1",
+    "babelify": "^7.2.0",
+    "dedux": "https://github.com/jsannerstedt/dedux/archive/v1.0-beta.tar.gz",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^2.0.0",
+    "exorcist": "^0.4.0",
+    "riot": "^2.2.4",
+    "riotify": "^0.1.2",
+    "watchify": "^3.7.0"
+  }
+}
