@@ -1,13 +1,13 @@
 <todoitem>
-  <div class="view">
-    <input class="toggle" type="checkbox" checked="{ opts.todo.completed }" onclick="{ toggleTodo }">
-    <label ondblclick="{ editTodo }">{ opts.todo.title }</label>
-    <button class="destroy" onclick="{ removeTodo }"></button>
-  </div>
-  <input name="todoedit" class="edit" type="text" onblur="{ doneEdit }" onkeyup="{ editKeyUp }">
+  <li>
+    <div class="view">
+      <input class="toggle" type="checkbox" checked="{ opts.todo.completed }" onclick="{ toggleTodo }">
+      <label ondblclick="{ editTodo }">{ opts.todo.title }</label>
+      <button class="destroy" onclick="{ removeTodo }"></button>
+    </div>
+    <input name="todoedit" class="edit" type="text" onblur="{ doneEdit }" onkeyup="{ editKeyUp }">
+  </li>
   <script type="text/babel">
-    'use strict';
-
     import actions from '../actions';
 
     const ENTER_KEY = 13;

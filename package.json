@@ -8,6 +8,7 @@
     "todomvc-common": "^1.0.1"
   },
   "devDependencies": {
+    "babel-plugin-transform-strict-mode": "^6.3.13",
     "babel-preset-es2015-riot": "^1.0.1",
     "babelify": "^7.2.0",
     "dedux": "https://github.com/jsannerstedt/dedux/archive/v1.0-beta.tar.gz",

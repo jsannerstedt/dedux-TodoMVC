@@ -1,5 +1,3 @@
-'use strict';
-
 import actions from '../actions';
 
 const ENTER_KEY = 13;

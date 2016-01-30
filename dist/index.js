@@ -2623,81 +2623,69 @@ exports.default = (0, _dedux.combineModifiers)({ todos: _todos2.default });
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var toggleCompleted = function toggleCompleted(isComplete, list) {
+  return list.map(function (todo) {
+    return Object.assign(todo, { completed: isComplete });
+  });
+};
+var calculateFilteredTodos = function calculateFilteredTodos(list, filter) {
+  return list.filter(function (t) {
+    return 'completed' === filter ? t.completed : !t.completed;
+  });
+};
+var _updateTodo = function _updateTodo(todo, props, list) {
+  return list.map(function (t) {
+    return t === todo ? Object.assign({}, todo, props) : t;
+  });
+};
+var calculateRemaining = function calculateRemaining(list) {
+  return list.filter(function (t) {
+    return !t.completed;
+  }).length;
+};
+var allDone = function allDone(list) {
+  return calculateRemaining(list) === 0;
+};
+var getNewState = function getNewState(list, filter) {
+  return {
+    list: list,
+    filteredTodos: 'all' === filter ? list : calculateFilteredTodos(list, filter),
+    remaining: calculateRemaining(list),
+    allDone: allDone(list)
+  };
+};
+
 exports.default = {
   initialState: function initialState() {
     return { list: [], filteredTodos: [], activeFilter: 'all' };
   },
   activateFilter: function activateFilter(filter, state) {
-    var newState = Object.assign(state, { activeFilter: filter });
-    return getNewState(newState.list, newState);
+    return Object.assign(getNewState(state.list, filter), { activeFilter: filter });
   },
-  addTodo: function addTodo(payload, state) {
-    return getNewState([].concat(state.list, [payload]), state);
+  addTodo: function addTodo(todo, state) {
+    return getNewState([].concat(state.list, [todo]), state.activeFilter);
   },
   removeCompleted: function removeCompleted(payload, state) {
     return getNewState(state.list.filter(function (t) {
       return !t.completed;
-    }), state);
+    }), state.activeFilter);
   },
   removeTodo: function removeTodo(todo, state) {
     return getNewState(state.list.filter(function (t) {
       return todo !== t;
-    }), state);
+    }), state.activeFilter);
   },
-  toggleAll: function toggleAll(payload, state) {
-    var list = state.list.map(function (todo) {
-      todo.completed = payload;
-      return todo;
-    });
-    return getNewState(list, state);
+  toggleAll: function toggleAll(isComplete, state) {
+    return getNewState(toggleCompleted(isComplete, state.list), state.activeFilter);
   },
   updateTodo: function updateTodo(payload, state) {
-    var list = state.list.map(function (t) {
-      var todo = t;
-      if (payload.todo === t) {
-        Object.assign(todo, payload.value);
-      }
-      return todo;
-    });
-    return getNewState(list, state);
+    return getNewState(_updateTodo(payload.todo, payload.value, state.list), state.activeFilter);
   }
 };
 
-function getNewState(list, state) {
-  return {
-    list: list,
-    filteredTodos: calculateFilteredTodos(list, state),
-    remaining: calculateRemaining(list),
-    allDone: allDone(list)
-  };
-}
-
-function calculateFilteredTodos(list, state) {
-  if (state.activeFilter === 'active') {
-    return list.filter(function (t) {
-      return !t.completed;
-    });
-  } else if (state.activeFilter === 'completed') {
-    return list.filter(function (t) {
-      return t.completed;
-    });
-  }
-  return list;
-}
-
-function calculateRemaining(list) {
-  return list.filter(function (t) {
-    return !t.completed;
-  }).length;
-}
-
-function allDone(list) {
-  return calculateRemaining(list) === 0;
-}
-
 },{}],8:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag2('todo', '<section class="todoapp"><header class="header"><h1>todos</h1><input class="new-todo" name="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" onkeyup="{todoInput}"></header><section class="main" show="{opts.state.todos.list.length}"><input class="toggle-all" type="checkbox" __checked="{opts.state.todos.allDone}" onclick="{toggleAll}"><ul class="todo-list"><li riot-tag="todoitem" class="todo {completed: t.completed, editing: t.editing}" each="{t, i in opts.state.todos.filteredTodos}" todo="{t}" parentview="{parent}"></li></ul></section><footer class="footer" show="{opts.state.todos.list.length}"><span class="todo-count"><strong>{opts.state.todos.remaining}</strong> {opts.state.todos.remaining === 1 ? \'item\' : \'items\'} left </span><ul class="filters"><li each="{filters}"><a class="{selected: parent.opts.state.todos.activeFilter === filter}" href="#/{filter}">{label}</a></li></ul><button class="clear-completed" onclick="{removeCompleted}" show="{opts.state.todos.list.length > opts.state.todos.remaining}"> Clear completed </button></footer></section><footer class="info"><p>Double-click to edit a todo</p><p>Written by <a href="http://github.com/jsannerstedt">Joel Sannerstedt</a></p><p>Part of <a href="http://todomvc.com">TodoMVC</a></p></footer>', '', '', function(opts) {
+module.exports = riot.tag2('todo', '<section class="todoapp"><header class="header"><h1>todos</h1><input class="new-todo" name="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" onkeyup="{todoInput}"></header><section class="main" show="{opts.state.todos.list.length}"><input class="toggle-all" type="checkbox" __checked="{opts.state.todos.allDone}" onclick="{toggleAll}"><ul class="todo-list"><todoitem class="todo {completed: completed, editing: editing}" each="{todo in opts.state.todos.filteredTodos}" todo="{todo}"></todoitem></ul></section><footer class="footer" show="{opts.state.todos.list.length}"><span class="todo-count"><strong>{opts.state.todos.remaining}</strong> {opts.state.todos.remaining === 1 ? \'item\' : \'items\'} left </span><ul class="filters"><li each="{filters}"><a class="{selected: parent.opts.state.todos.activeFilter === filter}" href="#/{filter}">{label}</a></li></ul><button class="clear-completed" onclick="{removeCompleted}" show="{opts.state.todos.list.length > opts.state.todos.remaining}"> Clear completed </button></footer></section><footer class="info"><p>Double-click to edit a todo</p><p>Written by <a href="http://github.com/jsannerstedt">Joel Sannerstedt</a></p><p>Part of <a href="http://todomvc.com">TodoMVC</a></p></footer>', '', '', function(opts) {
 'use strict';
 
 var _this = this;
@@ -2726,7 +2714,7 @@ this.toggleAll = function (e) {
 
 },{"../actions":4,"riot":2}],9:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag2('todoitem', '<div class="view"><input class="toggle" type="checkbox" __checked="{opts.todo.completed}" onclick="{toggleTodo}"><label ondblclick="{editTodo}">{opts.todo.title}</label><button class="destroy" onclick="{removeTodo}"></button></div><input name="todoedit" class="edit" type="text" onblur="{doneEdit}" onkeyup="{editKeyUp}">', '', '', function(opts) {
+module.exports = riot.tag2('todoitem', '<li><div class="view"><input class="toggle" type="checkbox" __checked="{opts.todo.completed}" onclick="{toggleTodo}"><label ondblclick="{editTodo}">{opts.todo.title}</label><button class="destroy" onclick="{removeTodo}"></button></div><input name="todoedit" class="edit" type="text" onblur="{doneEdit}" onkeyup="{editKeyUp}"></li>', '', '', function(opts) {
 'use strict';
 
 var _this = this;

@@ -7,8 +7,8 @@
     <section class="main" show="{ opts.state.todos.list.length}">
       <input class="toggle-all" type="checkbox" checked="{ opts.state.todos.allDone }" onclick="{ toggleAll }">
       <ul class="todo-list">
-        <li riot-tag="todoitem" class="todo { completed: t.completed, editing: t.editing }"
-            each={ t, i in opts.state.todos.filteredTodos } todo={ t } parentview={ parent }></li>
+        <todoitem class="todo { completed: completed, editing: editing }"
+            each="{ todo in opts.state.todos.filteredTodos }" todo="{ todo }"></todoitem>
       </ul>
     </section>
     <footer class="footer" show={ opts.state.todos.list.length }>
@@ -29,8 +29,6 @@
     <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
   </footer>
   <script type="text/babel">
-    'use strict';
-
     import actions from '../actions';
 
     this.filters = [

@@ -1,5 +1,3 @@
-'use strict';
-
 import { createStore } from 'dedux';
 import actions from './actions';
 import modifiers from './modifiers';
